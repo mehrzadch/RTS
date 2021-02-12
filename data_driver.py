@@ -13,9 +13,10 @@ import datetime as dt
 from api import Fetcher
 from feature_creator import Feature_Creator
 import matplotlib.pyplot as plt
+from send_email import send_email
 
-os.system('set http_proxy=http://proxy-chain.intel.com:911')
-os.system('set https_proxy=http://proxy-chain.intel.com:911')
+os.chdir('/home/ubuntu/RTS/RTS')
+os.system('git pull')
 
 # Get the list of companies from ./data/dow30.csv
 companies = pd.read_csv(os.path.join("input", "dow30_test.csv"))
@@ -47,3 +48,8 @@ for symbol in symbols:
 comb_df = comb_df.reset_index(drop=True)
 print(comb_df)
 comb_df.to_csv('summary.csv', float_format='%.1f', index=True)
+RECIPIENT  = ['mehrzad.chegini@gmail.com', 'mehrzad.malmirchegini@gmail.com', 'rzanbaghi@gmail.com']
+
+send_email('summary.csv', RECIPIENT[0])
+send_email('summary.csv', RECIPIENT[1])
+send_email('summary.csv', RECIPIENT[2])
