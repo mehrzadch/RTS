@@ -34,6 +34,7 @@ class Feature_Creator(BaseData):
         self.file_path = "./data/{}/quotes.csv".format(self.symbol)
         self.data = fetch.get_historical()
         self.data_normal = None
+        self.metrics = {}
 
         cols = self.data.columns.values
         cols_check = "Date,Open,High,Low,Close,Adj Close,Volume".split(',')
@@ -71,7 +72,7 @@ class Feature_Creator(BaseData):
         return df
 
     def create_summary_df(self):
-        summary_metric_list = ['Close', 'MA', 'Volume', 'Average Volume', 'RSI', "MACD", 'Signal']
+        summary_metric_list = ['Close', 'MA', 'Volume', 'Average Volume', 'RSI', "MACD", 'Signal', "Volume Ratio", "MACD Signal Delta", "MACD Singal Delta Perc", "MACD Singal ZC Count"]
         summary_metric_list_new = []
         for l in summary_metric_list:
             if l=='MA':
@@ -84,7 +85,6 @@ class Feature_Creator(BaseData):
         dict ['Company'] = self.symbol
         for l in summary_metric_list_new:
             dict[l] = self.data[l][self.num_samples - 1]
-
         df = pd.DataFrame(dict, index=[0])
         return df
 
@@ -122,6 +122,10 @@ class Feature_Creator(BaseData):
 
         ave_volume_vec = np.array(ave_volume_vec)
         self.add_metric(ave_volume_vec, "Average Volume")
+
+        volume_ratio = x/ave_volume_vec
+        self.add_metric(volume_ratio, "Volume Ratio")
+
 
     def calc_rsi(self):
         offset = 14
@@ -162,6 +166,35 @@ class Feature_Creator(BaseData):
 
         signal = self.calc_signal(9)
         self.add_metric(signal, "Signal")
+
+        delta = macd-signal
+        self.add_metric(delta, "MACD Signal Delta")
+        self.macd_signal_delta_calc(delta)
+
+    def macd_signal_delta_calc(self, x):
+        N = 3
+        delta_perc_list = [0]
+        cnt_list = [0]
+        for i in range(1, len(x)):
+            ind = list(range(max(i-N+1, 0), i))
+            x_N = x[ind]
+            delta_perc = np.mean(x_N)
+            delta_perc_list.append(delta_perc)
+
+            cnt = 0
+            for i in range(len(x_N)-1):
+                if x_N[i]*x_N[i+1] < 0 and x_N[i+1] > x_N[i]:
+                    cnt += 1
+            cnt_list.append(cnt)
+
+
+        delta_perc_list = np.array(delta_perc_list)
+        cnt_list = np.array(cnt_list)
+        self.add_metric(delta_perc_list, "MACD Singal Delta Perc")
+        self.add_metric(cnt_list, "MACD Singal ZC Count")
+
+
+
 
     def calc_ema(self, time_period):
         x = self.data["Close"].to_numpy()
