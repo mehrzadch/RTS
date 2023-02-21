@@ -14,7 +14,7 @@ from api import Fetcher
 from feature_creator import Feature_Creator
 from send_email import send_email
 
-os.chdir('/home/ubuntu/RTS/RTS')
+os.chdir('/home/ubuntu/RTS')
 os.system('git pull')
 
 # Get the list of companies from ./data/dow30.csv
