@@ -31,7 +31,7 @@ def send_email(filename, RECIPIENT):
     # replace email-smtp.us-west-2.amazonaws.com with the Amazon SES SMTP
     # endpoint in the appropriate region.
     HOST = "email-smtp.us-west-1.amazonaws.com"
-    PORT = 465
+    PORT = 587
 
     # The subject line of the email.
     SUBJECT = 'Realtime Trading Platform - Daily Report'
