@@ -12,14 +12,13 @@ from datetime import datetime, timedelta
 import datetime as dt
 from api import Fetcher
 from feature_creator import Feature_Creator
-import matplotlib.pyplot as plt
 from send_email import send_email
 
-os.chdir('/home/ubuntu/RTS/RTS')
-os.system('git pull')
+# os.chdir('/home/ubuntu/RTS/RTS')
+# os.system('git pull')
 
 # Get the list of companies from ./data/dow30.csv
-companies = pd.read_csv(os.path.join("input", "dow30.csv"))
+companies = pd.read_csv(os.path.join("input", "dow30_test.csv"))
 symbols =  companies['Symbol'].values.tolist()
 print(companies)
 print(symbols)

@@ -8,6 +8,8 @@ import warnings
 
 import pandas as pd
 import requests
+from bs4 import BeautifulSoup
+
 
 try:
     from io import StringIO
@@ -15,16 +17,20 @@ except ImportError:
     from StringIO import StringIO
 
 
-class Fetcher:
-    api_url = (
-        "https://query1.finance.yahoo.com/v7/finance/download/%s?period1=%s&period2=%s&interval=%s&events=%s&crumb=%s"
-    )
-
+class Fetcher(object):
     def __init__(self, ticker, start, end=None, interval="1d"):
         """Initializes class variables and formats api_url string"""
+
         self.ticker = ticker.upper()
+        self.header = {'Connection': 'keep-alive',
+                       'Expires': '-1',
+                       'Upgrade-Insecure-Requests': '1',
+                       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) \
+                   AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36'
+                       }
+        self.url = 'https://finance.yahoo.com/quote/{}/history'.format(self.ticker)
         self.interval = interval
-        self.cookie, self.crumb = self.init()
+        self.init()
         self.start = int(cal.timegm(dt.datetime(*start).timetuple()))
 
         if end is not None:
@@ -34,28 +40,24 @@ class Fetcher:
 
     def init(self):
         """Returns a tuple pair of cookie and crumb used in the request"""
-        url = "https://finance.yahoo.com/quote/%s/history" % (self.ticker)
-        r = requests.get(url)
-        txt = r.content
-        cookie = r.cookies["B"]
-        pattern = re.compile('.*"CrumbStore":\{"crumb":"(?P<crumb>[^"]+)"\}')
-
-        for line in txt.splitlines():
-            m = pattern.match(line.decode("utf-8"))
-            if m is not None:
-                crumb = m.groupdict()["crumb"]
-                crumb = crumb.replace(u"\\u002F", "/")
-        return cookie, crumb  # return a tuple of crumb and cookie
+        with requests.session():
+            website = requests.get(self.url, headers=self.header)
+            soup = BeautifulSoup(website.text, 'lxml')
+            self.crumb = re.findall('"CrumbStore":{"crumb":"(.+?)"}', str(soup))
+            self.cookies = website.cookies
 
     def _get(self, events):
-        if self.interval not in ["1d", "1wk", "1mo"]:
-            raise ValueError("Incorrect interval: valid intervals are 1d, 1wk, 1mo")
 
-        url = self.api_url % (self.ticker, self.start, self.end, self.interval, events, self.crumb)
+        with requests.session():
+            url = 'https://query1.finance.yahoo.com/v7/finance/download/' \
+                  '{stock}?period1={day_begin}&period2={day_end}&interval={interval}&events={events}&crumb={crumb}' \
+                .format(stock=self.ticker, day_begin=self.start, day_end=self.end, interval=self.interval, events=events, crumb=self.crumb)
 
-        data = requests.get(url, cookies={"B": self.cookie})
-        content = StringIO(data.content.decode("utf-8"))
-        return pd.read_csv(content, sep=",")
+            data = requests.get(url, headers=self.header, cookies=self.cookies)
+            content = StringIO(data.content.decode("utf-8"))
+            out = pd.read_csv(content, sep=",")
+            return out
+
 
     def getData(self, events):
         """Returns a list of historical data from Yahoo Finance"""
