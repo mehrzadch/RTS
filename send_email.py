@@ -9,7 +9,7 @@ def send_email(filename, RECIPIENT):
 
     # Replace sender@example.com with your "From" address.
     # This address must be verified.
-    SENDER = 'mehrzad.chegini@gmail.com'
+    SENDER = 'mehrzad.malmirchegini2022@gmail.com'
     SENDERNAME = 'Mehrzad Malmirchegini'
 
     # Replace recipient@example.com with a "To" address. If your account
@@ -17,10 +17,10 @@ def send_email(filename, RECIPIENT):
     #RECIPIENT  = 'mehrzad.chegini@gmail.com,mehrzad.malmirchegini@gmail.com,rzanbaghi@gmail.com'
 
     # Replace smtp_username with your Amazon SES SMTP user name.
-    USERNAME_SMTP = "AKIATYBTBK226EMGGNUM"
+    USERNAME_SMTP = "AKIA453EVDWVJMET7MVK"
 
     # Replace smtp_password with your Amazon SES SMTP password.
-    PASSWORD_SMTP = "BH/Pn/V4wNiEWhhcyVDvzITUJHzaSTq5nrY4u79O/Y/p"
+    PASSWORD_SMTP = "BAD0H4+Aus5OhHg2ru31qWVA5FhFW80THXu/vmd1UVkt"
 
     # (Optional) the name of a configuration set to use for this message.
     # If you comment out this line, you also need to remove or comment out
@@ -30,8 +30,8 @@ def send_email(filename, RECIPIENT):
     # If you're using Amazon SES in an AWS Region other than US West (Oregon),
     # replace email-smtp.us-west-2.amazonaws.com with the Amazon SES SMTP
     # endpoint in the appropriate region.
-    HOST = "email-smtp.us-east-2.amazonaws.com"
-    PORT = 587
+    HOST = "email-smtp.us-west-1.amazonaws.com"
+    PORT = 465
 
     # The subject line of the email.
     SUBJECT = 'Realtime Trading Platform - Daily Report'
