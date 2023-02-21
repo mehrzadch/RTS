@@ -9,6 +9,7 @@ Prerequisites:
 
 1. `sudo apt-get update`
    `sudo apt-get install python3-virtualenv`
+   `sudo apt install python3.10-venv`
 
 2. `git clone https://github.com/mehrzadch/RTS.git`
 
