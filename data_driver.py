@@ -18,7 +18,7 @@ os.chdir('/home/ubuntu/RTS')
 os.system('git pull')
 
 # Get the list of companies from ./data/dow30.csv
-companies = pd.read_csv(os.path.join("input", "dow30_test.csv"))
+companies = pd.read_csv(os.path.join("input", "dow30.csv"))
 symbols =  companies['Symbol'].values.tolist()
 print(companies)
 print(symbols)
