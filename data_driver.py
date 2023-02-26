@@ -47,7 +47,7 @@ for symbol in symbols:
 comb_df = comb_df.reset_index(drop=True)
 print(comb_df)
 comb_df.to_csv('summary.csv', float_format='%.1f', index=True)
-RECIPIENT  = ['mehrzad.chegini@gmail.com', 'rzanbaghi@gmail.com', 'eng.honarvar@gmail.com']
+RECIPIENT  = ['mehrzad.chegini@gmail.com', 'rzanbaghi@gmail.com', 'ghassemialir@gmail.com', 'eng.honarvar@gmail.com']
 
 send_email('summary.csv', RECIPIENT[0])
 send_email('summary.csv', RECIPIENT[1])
